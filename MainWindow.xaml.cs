@@ -22,12 +22,27 @@ public partial class MainWindow : Window
 
         m_AllDraggableShapes.Add(TileShape001);
         m_AllDraggableShapes.Add(TileShape002);
+
+        m_TileSlotWidth = TileShape001.Width;
+        m_TileSlotHeight = TileShape001.Height;
+        m_TileSlotMargin = 5;
     }
 
+    #region Data Members
     private List<UIElement> m_AllDraggableShapes = new List<UIElement>();
     private Point m_DragStartPoint;
     private bool m_IsDragging = false;
     private UIElement m_DraggedElement;
+
+    private double m_TileSlotWidth;
+    private double m_TileSlotHeight;
+    private int m_TileSlotMargin;
+    #endregion
+
+    private (double top, double left) FindDiscreteTileLocation(double currentTop, double currentLeft)
+    {
+        return (currentTop + m_TileSlotHeight / 2.0, currentLeft + m_TileSlotWidth / 2.0);
+    }
 
     private void BringDraggingShapeToFront(UIElement shapeToFocus)
     {
@@ -36,7 +51,7 @@ public partial class MainWindow : Window
             if (shape == shapeToFocus)
             {
                 // Set selected shape to the highest Z
-                Canvas.SetZIndex(shape, 2);
+                Canvas.SetZIndex(shape, 3);
             }
             else
             {
@@ -59,9 +74,11 @@ public partial class MainWindow : Window
             BringDraggingShapeToFront(m_DraggedElement);
 
             // Set the target location to where the tile started
-            Canvas.SetLeft(TargetLocationShape, Canvas.GetLeft(m_DraggedElement));
             Canvas.SetTop(TargetLocationShape, Canvas.GetTop(m_DraggedElement));
+            Canvas.SetLeft(TargetLocationShape, Canvas.GetLeft(m_DraggedElement));
             TargetLocationShape.Visibility = Visibility.Visible;
+            // Set target shape to be higher than the rest but lower than then dragging tile
+            Canvas.SetZIndex(TargetLocationShape, 2);
         }
     }
 
@@ -77,6 +94,11 @@ public partial class MainWindow : Window
             Canvas.SetTop(m_DraggedElement, Canvas.GetTop(m_DraggedElement) + deltaY);
 
             m_DragStartPoint = currentPosition; // Update drag start point for continuous dragging
+
+            // Move the targt around to best location
+            (var top, var left) = FindDiscreteTileLocation(Canvas.GetTop(m_DraggedElement), Canvas.GetLeft(m_DraggedElement));
+            Canvas.SetTop(TargetLocationShape, top);
+            Canvas.SetLeft(TargetLocationShape, left);
         }
     }
 
