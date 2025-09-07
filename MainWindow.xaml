@@ -10,11 +10,11 @@
         <Canvas x:Name="MyCanvas" Background="LightGray" AllowDrop="True"
             Drop="MyCanvas_Drop" DragOver="MyCanvas_DragOver"
                 MouseMove="MyCanvas_MouseMove">
-            <Rectangle x:Name="DraggableRectangle" Fill="Blue" Width="50" Height="50"
+            <Rectangle x:Name="TileShape001" Fill="Blue" Width="50" Height="50"
                    Canvas.Left="100" Canvas.Top="100"
                    MouseDown="DraggableShape_MouseDown"
                    MouseUp="DraggableShape_MouseUp"/>
-            <Rectangle x:Name="DraggableRectangle2" Fill="Green" Width="50" Height="50"
+            <Rectangle x:Name="TileShape002" Fill="Green" Width="50" Height="50"
                    Canvas.Left="200" Canvas.Top="100"
                    MouseDown="DraggableShape_MouseDown"
                    MouseUp="DraggableShape_MouseUp"/>

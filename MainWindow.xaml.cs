@@ -19,47 +19,69 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        m_AllDraggableShapes.Add(TileShape001);
+        m_AllDraggableShapes.Add(TileShape002);
     }
 
-    private Point _dragStartPoint;
-    private bool _isDragging = false;
-    private UIElement _draggedElement;
+    private List<UIElement> m_AllDraggableShapes = new List<UIElement>();
+    private Point m_DragStartPoint;
+    private bool m_IsDragging = false;
+    private UIElement m_DraggedElement;
+
+    private void BringDraggingShapeToFront(UIElement shapeToFocus)
+    {
+        foreach(var shape in m_AllDraggableShapes)
+        {
+            if (shape == shapeToFocus)
+            {
+                // Set selected shape to the highest Z
+                Canvas.SetZIndex(shape, 2);
+            }
+            else
+            {
+                // Set all other shapes to the lowest Z
+                Canvas.SetZIndex(shape, 1);
+            }
+        }
+    }
 
     private void DraggableShape_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
         {
-            _draggedElement = sender as UIElement;
-            _dragStartPoint = e.GetPosition(MyCanvas);
-            _isDragging = true;
-            var captured = _draggedElement.CaptureMouse(); // Capture mouse to ensure MouseMove events are received
-            //int i;
-            //i = 0;
+            m_DraggedElement = sender as UIElement;
+            m_DragStartPoint = e.GetPosition(MyCanvas);
+            m_IsDragging = true;
+            var captured = m_DraggedElement.CaptureMouse(); // Capture mouse to ensure MouseMove events are received
+
+            // Make sure the currently dragging item is a higher Z than any other shape on the canvas
+            BringDraggingShapeToFront(m_DraggedElement);
         }
     }
 
     private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
     {
-        if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
+        if (m_IsDragging && e.LeftButton == MouseButtonState.Pressed)
         {
             Point currentPosition = e.GetPosition(MyCanvas);
-            double deltaX = currentPosition.X - _dragStartPoint.X;
-            double deltaY = currentPosition.Y - _dragStartPoint.Y;
+            double deltaX = currentPosition.X - m_DragStartPoint.X;
+            double deltaY = currentPosition.Y - m_DragStartPoint.Y;
 
-            Canvas.SetLeft(_draggedElement, Canvas.GetLeft(_draggedElement) + deltaX);
-            Canvas.SetTop(_draggedElement, Canvas.GetTop(_draggedElement) + deltaY);
+            Canvas.SetLeft(m_DraggedElement, Canvas.GetLeft(m_DraggedElement) + deltaX);
+            Canvas.SetTop(m_DraggedElement, Canvas.GetTop(m_DraggedElement) + deltaY);
 
-            _dragStartPoint = currentPosition; // Update drag start point for continuous dragging
+            m_DragStartPoint = currentPosition; // Update drag start point for continuous dragging
         }
     }
 
     private void DraggableShape_MouseUp(object sender, MouseButtonEventArgs e)
     {
-        if (_isDragging)
+        if (m_IsDragging)
         {
-            _isDragging = false;
-            _draggedElement.ReleaseMouseCapture(); // Release mouse capture
-            _draggedElement = null;
+            m_IsDragging = false;
+            m_DraggedElement.ReleaseMouseCapture(); // Release mouse capture
+            m_DraggedElement = null;
         }
     }
 
