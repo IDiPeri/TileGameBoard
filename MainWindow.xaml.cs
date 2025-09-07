@@ -25,7 +25,7 @@ public partial class MainWindow : Window
 
         m_TileSlotWidth = TileShape001.Width;
         m_TileSlotHeight = TileShape001.Height;
-        m_TileSlotMargin = 5;
+        m_TileSlotMargin = 2;
     }
 
     #region Data Members
@@ -36,12 +36,16 @@ public partial class MainWindow : Window
 
     private double m_TileSlotWidth;
     private double m_TileSlotHeight;
-    private int m_TileSlotMargin;
+    private double m_TileSlotMargin;
     #endregion
 
     private (double top, double left) FindDiscreteTileLocation(double currentTop, double currentLeft)
     {
-        return (currentTop + m_TileSlotHeight / 2.0, currentLeft + m_TileSlotWidth / 2.0);
+        double verticalSlotSize = (m_TileSlotHeight + m_TileSlotMargin * 2);
+        double horizonalSlotSize = (m_TileSlotWidth + m_TileSlotMargin * 2);
+        double newTop = Math.Truncate(currentTop / verticalSlotSize) * verticalSlotSize;
+        double newLeft = Math.Truncate(currentLeft / horizonalSlotSize) * horizonalSlotSize;
+        return (newTop, newLeft);
     }
 
     private void BringDraggingShapeToFront(UIElement shapeToFocus)
@@ -106,6 +110,10 @@ public partial class MainWindow : Window
     {
         if (m_IsDragging)
         {
+            // Move the tile to the target location since that's the best valid spot
+            Canvas.SetTop(m_DraggedElement, Canvas.GetTop(TargetLocationShape));
+            Canvas.SetLeft(m_DraggedElement, Canvas.GetLeft(TargetLocationShape));
+
             m_IsDragging = false;
             m_DraggedElement.ReleaseMouseCapture(); // Release mouse capture
             m_DraggedElement = null;
