@@ -10,6 +10,9 @@
         <Canvas x:Name="MyCanvas" Background="LightGray" AllowDrop="True"
             Drop="MyCanvas_Drop" DragOver="MyCanvas_DragOver"
                 MouseMove="MyCanvas_MouseMove">
+            <Rectangle x:Name="TargetLocationShape" Stroke="DarkGray" StrokeThickness="2" StrokeDashArray="4 2" RadiusX="2" RadiusY="2" Width="50" Height="50"
+                   Canvas.Left="300" Canvas.Top="100"
+                   Visibility="Hidden"/>
             <Rectangle x:Name="TileShape001" Fill="Blue" Width="50" Height="50"
                    Canvas.Left="100" Canvas.Top="100"
                    MouseDown="DraggableShape_MouseDown"

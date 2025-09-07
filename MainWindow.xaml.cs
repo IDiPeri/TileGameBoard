@@ -57,6 +57,11 @@ public partial class MainWindow : Window
 
             // Make sure the currently dragging item is a higher Z than any other shape on the canvas
             BringDraggingShapeToFront(m_DraggedElement);
+
+            // Set the target location to where the tile started
+            Canvas.SetLeft(TargetLocationShape, Canvas.GetLeft(m_DraggedElement));
+            Canvas.SetTop(TargetLocationShape, Canvas.GetTop(m_DraggedElement));
+            TargetLocationShape.Visibility = Visibility.Visible;
         }
     }
 
@@ -82,6 +87,7 @@ public partial class MainWindow : Window
             m_IsDragging = false;
             m_DraggedElement.ReleaseMouseCapture(); // Release mouse capture
             m_DraggedElement = null;
+            TargetLocationShape.Visibility = Visibility.Hidden;
         }
     }
 
