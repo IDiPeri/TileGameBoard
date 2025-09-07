@@ -100,7 +100,7 @@ public partial class MainWindow : Window
             m_DragStartPoint = currentPosition; // Update drag start point for continuous dragging
 
             // Move the targt around to best location
-            (var top, var left) = FindDiscreteTileLocation(Canvas.GetTop(m_DraggedElement), Canvas.GetLeft(m_DraggedElement));
+            (var top, var left) = FindDiscreteTileLocation(currentPosition.Y, currentPosition.X);
             Canvas.SetTop(TargetLocationShape, top);
             Canvas.SetLeft(TargetLocationShape, left);
         }
